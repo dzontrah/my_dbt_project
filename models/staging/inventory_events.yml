@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: inventory_events
+    description: "Events affecting inventory changes in the system"
+
+    columns:
+      - name: inventory_id
+        description: "Unique identifier for each inventory event"
+        tests:
+          - not_null
+          - unique
+
+      - name: event_type
+        description: "Type of inventory event"
+        tests:
+          - accepted_values:
+              values: ['ADJUSTMENT', 'SALE', 'RETURN', 'RESTOCK']
+
+      - name: quantity_change
+        description: "The change in inventory quantity"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "quantity_change >= 0"
+
+      - name: timestamp
+        description: "Timestamp of the event"
+        tests:
+          - not_null
